@@ -12,10 +12,10 @@ namespace Uwizard
         {
             try
             {
-                MemoryStream ms = new MemoryStream(indata);
-                StreamWriter sw = new StreamWriter(outfile);
-                GZipStream gzs = new GZipStream(ms, CompressionMode.Decompress);
-                int lbyte = gzs.ReadByte();
+                var ms = new MemoryStream(indata);
+                var sw = new StreamWriter(outfile);
+                var gzs = new GZipStream(ms, CompressionMode.Decompress);
+                var lbyte = gzs.ReadByte();
                 while (lbyte != -1)
                 {
                     sw.BaseStream.WriteByte((byte)lbyte);
@@ -38,9 +38,9 @@ namespace Uwizard
         {
             try
             {
-                byte[] ifdata = File.ReadAllBytes(infile);
-                StreamWriter sw = new StreamWriter(outfile);
-                GZipStream gzs = new GZipStream(sw.BaseStream, CompressionMode.Compress);
+                var ifdata = File.ReadAllBytes(infile);
+                var sw = new StreamWriter(outfile);
+                var gzs = new GZipStream(sw.BaseStream, CompressionMode.Compress);
                 gzs.Write(ifdata, 0, ifdata.Length);
                 gzs.Close();
                 gzs.Dispose();
@@ -57,10 +57,10 @@ namespace Uwizard
         {
             try
             {
-                StreamWriter sw = new StreamWriter(outfile);
-                StreamReader sr = new StreamReader(infile);
-                GZipStream gzs = new GZipStream(sr.BaseStream, CompressionMode.Decompress);
-                int lbyte = gzs.ReadByte();
+                var sw = new StreamWriter(outfile);
+                var sr = new StreamReader(infile);
+                var gzs = new GZipStream(sr.BaseStream, CompressionMode.Decompress);
+                var lbyte = gzs.ReadByte();
                 while (lbyte != -1)
                 {
                     sw.BaseStream.WriteByte((byte)lbyte);

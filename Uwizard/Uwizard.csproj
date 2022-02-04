@@ -5,11 +5,12 @@
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{9B33E2BA-0929-4260-B19E-40F9501F09B3}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Uwizard</RootNamespace>
     <AssemblyName>Uwizard</AssemblyName>
-    <ApplicationIcon>icon.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
     <StartupObject>
     </StartupObject>
     <FileUpgradeFlags>
@@ -52,15 +53,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Form1.cs" />
+    <Compile Include="Core.cs" />
     <Compile Include="GZip.cs" />
-    <Compile Include="NUSD.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Form1.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>Form1.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -84,8 +80,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="bin\Debug\titles\0005000E1010EC00\48\CDecrypt.exe" />
-    <Content Include="favicon %281%29.ico" />
-    <Content Include="icon.ico" />
     <None Include="Resources\mp3enc.exe" />
     <None Include="Resources\dbutton.png" />
     <None Include="Resources\SARCPack.exe" />
