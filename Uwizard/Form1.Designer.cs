@@ -322,7 +322,9 @@ namespace Uwizard {
             this.button8.TabIndex = 7;
             this.button8.Text = "Extract Game Files";
             this.button8.UseVisualStyleBackColor = true;
-            this.button8.Click += new System.EventHandler(this.button8_Click);
+            this.button8.Click += new System.EventHandler((sender, args) => {
+                runExtract(gtkey.Text, ckey_prev.Text, currentwud);
+            });
             // 
             // groupBox8
             // 

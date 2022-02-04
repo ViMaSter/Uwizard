@@ -210,7 +210,7 @@ namespace Uwizard {
             return num.ToString("X");
         }
 
-        public bool IsHex(char ch) {
+        public static bool IsHex(char ch) {
             ch = char.ToUpper(ch);
             switch (ch) {
                 case '0':
@@ -234,7 +234,7 @@ namespace Uwizard {
            return false;
         }
 
-        public byte[] hex2byte(string str) {
+        public static byte[] hex2byte(string str) {
             byte[] ret = new byte[str.Length>>1];
             for (int c = 0; c < ret.Length; c++) {
                 if (!(IsHex(str[c*2]) && IsHex(str[c*2+1]))) return null;
@@ -646,37 +646,11 @@ exsub:      obox.Dispose();
             }
         }
 
-        private void button8_Click(object sender, EventArgs e) {
-            if (gtkey.Text == "") {
-                msgbox(uwiz_langtext[18]); // "The disc title key is required to decrypt the data."
-                badtkey();
-                return;
-            }
-            if (ckey_prev.Text == "") {
-                msgbox(uwiz_langtext[19]); // "The common key is required to decrypt the data."
-                badckey();
-                return;
-            }
-            byte[] tkeydu = hex2byte(gtkey.Text);
-            byte[] ckeydu = hex2byte(ckey_prev.Text);
-            if (tkeydu == null || tkeydu.Length != 16) {
-                msgbox(uwiz_langtext[20]); // "The disc title key is invalid."
-                badtkey();
-                return;
-            }
-            if (ckeydu == null || ckeydu.Length != 16) {
-                msgbox(uwiz_langtext[21]); // "The common key is invalid."
-                badtkey();
-                return;
-            }
+        public static void runExtract(string titleKey, string commonKey, string wudPath) {
+            byte[] tkeydu = hex2byte(titleKey);
+            byte[] ckeydu = hex2byte(commonKey);
 
             bool haddiscu = System.IO.File.Exists("DiscU.exe");
-
-            FolderBrowserDialog fbox = new FolderBrowserDialog();
-            fbox.Description = uwiz_langtext[22]; // "Select where to save the extracted files."
-            fbox.ShowNewFolderButton = true;
-            fbox.SelectedPath = Environment.CurrentDirectory;
-            if (fbox.ShowDialog() == DialogResult.Cancel) goto exsub;
 
             System.IO.File.WriteAllBytes("ckey.bin", ckeydu);
             System.IO.File.WriteAllBytes("tkey.bin", tkeydu);
@@ -701,8 +675,8 @@ exsub:      obox.Dispose();
 
             System.Diagnostics.Process discu = new System.Diagnostics.Process();
             discu.StartInfo.FileName = Environment.CurrentDirectory + "\\DiscU.exe";
-            discu.StartInfo.Arguments = "\"" + Environment.CurrentDirectory + "\\tkey.bin\" \"" + currentwud + "\" \"" + Environment.CurrentDirectory + "\\ckey.bin\"";
-            discu.StartInfo.WorkingDirectory = fbox.SelectedPath;
+            discu.StartInfo.Arguments = "\"" + Environment.CurrentDirectory + "\\tkey.bin\" \"" + wudPath + "\" \"" + Environment.CurrentDirectory + "\\ckey.bin\"";
+            discu.StartInfo.WorkingDirectory = Environment.CurrentDirectory;
             //msgbox(discu.StartInfo.Arguments);
 
             discu.StartInfo.RedirectStandardInput = true;
@@ -711,33 +685,15 @@ exsub:      obox.Dispose();
             discu.StartInfo.CreateNoWindow = true;
             discu.StartInfo.UseShellExecute = false;
 
-            duout.Visible = true;
-            duout.Text = "";
-            this.Cursor = Cursors.WaitCursor;
-
             discu.Start();
             //string line;
             while (!discu.StandardOutput.EndOfStream) {
-                duout.AppendText(discu.StandardOutput.ReadLine() + "\r\n");
-                duout.SelectionStart = duout.TextLength;
-                duout.SelectionLength = 0;
-                duout.ScrollToCaret();
+                Console.WriteLine(discu.StandardOutput.ReadLine());
                 Application.DoEvents();
             }
             discu.WaitForExit();
             discu.Dispose();
 
-            string opath = fbox.SelectedPath + "\\" +  currentwud_id.Substring(0, 10);
-            if (!System.IO.Directory.Exists(opath)) {
-                msgbox(uwiz_langtext[23]); // "Error Extracting Files!"
-            } else {
-                System.Diagnostics.Process.Start("C:\\Windows\\explorer.exe", "\"" + opath + "\"");
-            }
-
-
-exsub:      fbox.Dispose();
-            this.Cursor = Cursors.Default;
-            duout.Visible = false;
             if (System.IO.File.Exists("tkey.bin")) System.IO.File.Delete("tkey.bin");
             if (System.IO.File.Exists("ckey.bin")) System.IO.File.Delete("ckey.bin");
             #if EMBEDDED_DISCU

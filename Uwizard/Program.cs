@@ -46,68 +46,45 @@ namespace Uwizard {
                     System.IO.StreamReader sr = new System.IO.StreamReader(cla[1]);
                     string magic = ((char) sr.BaseStream.ReadByte()).ToString() + ((char) sr.BaseStream.ReadByte()).ToString() + ((char) sr.BaseStream.ReadByte()).ToString() + ((char) sr.BaseStream.ReadByte()).ToString();
 
-                    switch (magic) {
+                    switch (magic)
+                    {
+                        case "WUP-":
+                            Console.WriteLine("File is a WUD file.");
+                            Console.WriteLine("Extraction start might take a few seconds and will be completed when 'Done!' is printed");
+                            Form1.runExtract(cla[2], cla[3], cla[1]);
+                            Console.WriteLine("Done!");
+                            break;
                         case "SARC":
                             Console.WriteLine("File is a SARC archive.");
-                            if (sarcmode == 0) {
-                                Console.WriteLine("Do you want to extract the contents of this archive or compress this archive into a Yaz0 SZS? (C/E)");
-                                if (Console.ReadKey().Key == ConsoleKey.C)
-                                    sarcmode = 1;
-                                else
-                                    sarcmode = 2;
-                            }
-                            if (sarcmode == 1) {
-                                if (opath == "") opath = cla[1] + ".szs";
-                                Console.WriteLine("Compressing to \"" + opath + "\".");
-                                if (Form1.packszs(cla[1], opath))
-                                    Console.WriteLine("Finished!");
-                                else
-                                    Console.WriteLine("Error!");
-                            } else {
-                                if (opath == "") opath = cla[1] + "_extracted";
-                                Console.WriteLine("Extracting to \"" + opath + "\".");
-                                if (SARC.extract(cla[1], opath)) {
-                                    Console.WriteLine("Finished! Open the new directory? (Y/N)");
-                                    if (Console.ReadKey().Key == ConsoleKey.Y)
-                                        System.Diagnostics.Process.Start(opath);
-                                } else
-                                    Console.WriteLine("Error!\n" + SARC.lerror);
-                            }
+                            if (opath == "") opath = cla[1] + "_extracted";
+                            Console.WriteLine("Extracting to \"" + opath + "\".");
+                            if (SARC.extract(cla[1], opath)) {
+                                Console.WriteLine("Finished!");
+                            } else
+                                Console.WriteLine("Error!\n" + SARC.lerror);
                             break;
                         case "Yaz0":
                             Console.WriteLine("File is Yaz0 compressed.");
                             if (opath == "") opath = cla[1] + ".bin";
                             Console.WriteLine("Decompressing to \"" + opath + "\".");
                             if (Form1.extractszs(cla[1], opath))
+                            {
                                 Console.WriteLine("Finished!");
-                            else
-                                Console.WriteLine("Error!");
-                            break;
-                        case "FRES":
-                            Console.WriteLine("File is a BFRES model.");
-                            Console.WriteLine("Support for BFRES models is coming soon!");
-                            break;
-                        case "FSTM":
-                            Console.WriteLine("File is a BFSTM sound stream.");
-                            if (opath == "") opath = cla[1] + ".wav";
-                            Console.Write("Extracting...");
-                            if (Form1.convertbfstm(cla[1], opath, sepchans))
-                                Console.WriteLine("Done!");
-                            else
-                                Console.WriteLine("Error!");
-                            break;
-                        case "FWAV":
-                            Console.WriteLine("File is a BFWAV sound stream.");
-                            if (opath == "") opath = cla[1] + ".wav";
-                            Console.Write("Extracting...");
-                            if (Form1.convertbfstm(cla[1], opath, sepchans))
-                                Console.WriteLine("Done!");
+                                if (!SARC.extract(opath, opath + "_extracted"))
+                                {
+                                    Console.WriteLine("Error!");
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Success!");
+                                }
+                            }
                             else
                                 Console.WriteLine("Error!");
                             break;
                         default:
-                            Console.WriteLine("Unknown file type!");
-                            break;
+                            Console.WriteLine("Unknown file type! + '" + magic + "'");
+                            break;;
                     }
                 } else
                     if (System.IO.Directory.Exists(cla[1])) {
@@ -121,14 +98,8 @@ namespace Uwizard {
                         Console.WriteLine("Uwizard can run in command line mode in addition to GUI mode. You may specify a file and Uwizard will take the correct action for that file type. For example, if the first argument is the path to an SZS file, Uwizard will try to decompress it. You may also specify an output path with the \"-o <outputfile>\" parameter. If the input file is a BFSTM sound stream, you may also specify the \"-s\" switch to export all sound channels as seperate WAV files. If the input file is a SARC archive, you may add \"-c\" to compress the SARC into a Yaz0 SZS, or \"-e\" to extract it to a directory. You may also specify the SARC padding with the \"-pad <decimalvalue>\".");
                     }
                 Console.WriteLine();
-                Console.WriteLine("Press any key to close this window. The 'A' key works too. :P");
-                Console.ReadKey();
                 return;
-            }//*/
-
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            }
         }
     }
 }
